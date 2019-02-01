@@ -45,7 +45,7 @@ void InitSystem(void) {
 
     InitClock();
     InitPins();
-    InitInterruptSystem();
+    //InitInterruptSystem();
 
 }
 
@@ -70,7 +70,7 @@ void InitPins(void) {
     SYSKEY = 0x556699aa;        //ID in reverse
     CFGCONbits.IOLOCK = 0;      
     //Set PPS registers here
-    SDI1R = 3;  
+    //SDI1R = 3;  
     RPB13R = 3; //SDO1 (0011)
     RPB15R = 3; //SS1 (0011)
     U1RXR = 2;  //RA4 (RX1)

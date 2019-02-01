@@ -9,6 +9,8 @@
       <itemPath>SPI.h</itemPath>
       <itemPath>ILI9341.h</itemPath>
       <itemPath>EUSART.h</itemPath>
+      <itemPath>FONT.h</itemPath>
+      <itemPath>BNO055.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -24,6 +26,7 @@
       <itemPath>SPI.c</itemPath>
       <itemPath>ILI9341.c</itemPath>
       <itemPath>EUSART.c</itemPath>
+      <itemPath>BNO055.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -39,7 +42,7 @@
         <targetDevice>PIC32MX170F256B</targetDevice>
         <targetHeader></targetHeader>
         <targetPluginBoard></targetPluginBoard>
-        <platformTool></platformTool>
+        <platformTool>PICkit3PlatformTool</platformTool>
         <languageToolchain>XC32</languageToolchain>
         <languageToolchainVersion>2.10</languageToolchainVersion>
         <platform>3</platform>
@@ -200,6 +203,9 @@
         <property key="save-temps" value="false"/>
         <property key="wpo-lto" value="false"/>
       </C32Global>
+      <PICkit3PlatformTool>
+        <property key="firmware.download.all" value="false"/>
+      </PICkit3PlatformTool>
     </conf>
   </confs>
 </configurationDescriptor>

@@ -18,6 +18,7 @@
 #define TEMP_SOURCE         0x40
 #define UNIT_SEL            0x3B
 #define AXIS_MAP_SIGN       0x42
+#define CALIB_STATUS        0x35
 
 #define TEMP                0x34
 #define GRV_Z_MSB           0x33

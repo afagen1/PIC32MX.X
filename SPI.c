@@ -33,13 +33,14 @@ void SPI1_Init(void) {
 
     SPI1CONbits.ON = 0;                 //Turn off SPI1 for config.
     rx = SPI1BUF;                       //Read the buffer to make clear
-    SPI1BRG = 0x14;                     //1MHz Baud at 20MHz PBCLK
+    SPI1BRG = 0x19;                     //1MHz Baud at 20MHz PBCLK
     SPI1CONbits.MSTEN = 1;              //Master Mode 
     SPI1CONbits.CKP = 1;                //Idle High, Drive Low
+    SPI1CONbits.ENHBUF = 1;
     SPI1CONbits.MCLKSEL = 0;            //PBCLK is used for Baud         
     SPI1CONbits.MSSEN = 0;              //SS control is disabled for SPI Module
-    SPI1CONbits.DISSDO = 1;             //SDO control is enabled for SPI Module
-    SPI1CONbits.DISSDI = 1;             //SDI control is enabled for SPI Module
+    SPI1CONbits.DISSDO = 0;             //SDO control is enabled for SPI Module
+    SPI1CONbits.DISSDI = 0;             //SDI control is enabled for SPI Module
     SPI2CONbits.MODE16 = 0;             //No 16bit Mode
     SPI2CONbits.MODE32 = 0;             //No 32bit Mode
     SPI1CON2bits.AUDEN = 0;             //Cleared for 8bit Mode
@@ -55,16 +56,20 @@ void SPI1_Close(void) {
 }
 
 void SPI1_Write(unsigned char data) {
+    int i;
+    IFS1bits.SPI1TXIF = 0;
     char dummy;
     dummy = SPI1BUF;                    // Clear the buffer
     //SSP1CON1bits.WCOL = 0;            //If we want to check for collision
     SPI1BUF = data; 
-    while (!SPI1STATbits.SPIBUSY);      //While the buffer is not full wait
+    while (SPI1STATbits.SPIBUSY);      //While the buffer is not full wait
+    
+    
     dummy = SPI1BUF;                    //Read the buffer
 }
 
 unsigned char SPI1_Read(void) {
     SPI1BUF = 0x00;                     //Put something into the register
-    while (!SPI1STATbits.SPIBUSY);      //Wait till our buffer is full
+    while (!SPI1STATbits.SPITBE);      //Wait till our buffer is full
     return SPI1BUF;                     //Return the byte we get
 }

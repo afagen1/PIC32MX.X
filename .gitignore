@@ -1,0 +1,10 @@
+
+build/default/production/BNO055.o
+build/default/production/BNO055.o.d
+build/default/production/CONFIG.o
+*.o
+*.o
+dist/default/production/PIC32MX.X.production.map
+dist/default/production/PIC32MX.X.production.hex
+dist/default/production/PIC32MX.X.production.elf
+dist/default/production/memoryfile.xml

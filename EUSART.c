@@ -122,12 +122,15 @@ void UART_2_Init (int baudrate){
 //
 //}
 
-//char UART_1_Receive (void){
-//    char rx;
-//    rx = RCREG1;
-//    return rx;
-//
-//}
+char UART_1_Receive (void){
+    char rx;
+
+//    while(!)
+    while(!U1STAbits.URXDA);
+    rx = U1RXREG;
+    return rx;
+
+}
 
 //char UART_2_Receive (void){
 //    char rx;

@@ -28,14 +28,18 @@
 void Boot_Message(void);
 void Done_Message(void);
 char buffer_1 [40];
+int buffer_2 [40];
 char c;
 
 //NMEA Strings
 char Baud_Rate_Change_38400 [] = "$PMTK251,38400*27\r\n";
 char NMEA_Update_Rate [] = "$PMTK220,1000*1F\r\n";
 int i;
+int gyr_x,acc_x,mag_x;
 int main(void) {
-    
+    gyr_x = 0;
+    acc_x = 0;
+    mag_x = 0;
     //Config Functions
     InitSystem();
     SPI1_Init();
@@ -47,7 +51,7 @@ int main(void) {
     TFT_SetFont(Courier_New_Bold_20,1);
     Boot_Message();
     BNO_Init();
-    BNO_Cal_Routine();
+//    BNO_Cal_Routine();
     
     TFT_FillScreen(BLACK);
     Done_Message();
@@ -55,11 +59,18 @@ int main(void) {
     c = 0;
     
     while (1) {
+//        BNO_Init();
+//        TFT_Box(20,80,80,140,BLACK);
         c += 1;
-        LATBbits.LATB0 ^= 1;
         if(c == 10){c= 0;}
         sprintf(buffer_1,"%d",c);
         TFT_Text(buffer_1, 20, 40, BLACK, WHITE);
+        I2C_1_Repeated_Read(BNO_DEVICE, GYR_X_LSB, 6);
+        for(i = 0; i < 6; i++){
+            buffer_2[i] = Xfer_Int(i);
+        }
+//        sprintf(buffer_1,"Heading: %d", 16*I2C_1_Read_Byte(BNO_DEVICE, EUL_HEAD_LSB));
+        TFT_Text(buffer_2, 20, 80, BLACK, WHITE);
         for (i = 0; i < 1000000; ++i);
     }
 }

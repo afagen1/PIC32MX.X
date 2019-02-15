@@ -5,6 +5,7 @@
 #include "CONFIG.h"
 #include "I2C.h"
 #include "ILI9341.h"
+#include "Delay.h"
 #ifdef _BNO055_H
 #define _BNO055_H
 

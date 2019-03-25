@@ -15,9 +15,8 @@
 
 //RB9 = SDA1
 //RB8 = SCL1
-
+/*****************************************************************************/
 void I2C_1_Init(void){
-//    I2C_1_Check();
     flag = 0;
     //Set Baud Rates
     //I2C1BRG = 0x015;                //400kHz
@@ -35,7 +34,7 @@ void I2C_1_Init(void){
     IFS1bits.I2C1BIF = 0;
     
 }
-
+/*****************************************************************************/
 void I2C_2_Init(void){
     
     //Set Baud Rates
@@ -47,8 +46,7 @@ void I2C_2_Init(void){
     
     
 }
-
-
+/******************************************************************************/
 char I2C_1_Read_Byte(char device_adr, char reg_adr){
     
     char rx;
@@ -79,7 +77,7 @@ char I2C_1_Read_Byte(char device_adr, char reg_adr){
     while (I2C1CONbits.PEN == 1);       //Wait for stop to finish
     return rx;
 }
-
+/******************************************************************************/
 char I2C_2_Read_Byte(char device_adr, char reg_adr){
     
     char rx;
@@ -103,7 +101,7 @@ char I2C_2_Read_Byte(char device_adr, char reg_adr){
     while (I2C2CONbits.PEN == 1);       //Wait for stop to finish
     return rx;
 }
-
+/******************************************************************************/
 void I2C_1_Write_Byte(char device_adr, char reg_adr, char value){
     char data;
     
@@ -131,7 +129,7 @@ void I2C_1_Write_Byte(char device_adr, char reg_adr, char value){
     I2C1CONbits.PEN = 1;                //Stop condition
     while (I2C1CONbits.PEN == 1);       //Wait for stop to finish
 }
-
+/******************************************************************************/
 void I2C_2_Write_Byte(char device_adr, char reg_adr, char value){
     char data;
     
@@ -150,45 +148,7 @@ void I2C_2_Write_Byte(char device_adr, char reg_adr, char value){
     I2C2CONbits.PEN = 1;                //Stop condition
     while (I2C2CONbits.PEN == 1);       //Wait for stop to finish
 }
-
-void I2C_1_Check(void)
-{	static	int	Collision = 0;
-	int c,	i,	n;					// Check State of the I2C bus
-	if (I2C1CONbits.ON == 1)		// Enabled
-	{	if (I2C1STATbits.BCL)		// Bus collision has occurred
-		{	I2C1STATbits.BCL = 0;	// Clear
-			Collision += 1;
-			if (Collision == 100)
-				I2C1CONbits.ON = 0;	// Disable I2C2
-	}	}
-	if (I2C1CONbits.ON == 0)		// Not enabled
-	{	if (!PORTBbits.RB8)		// Clock line busy
-		{	n = 10000;
-			while (!PORTBbits.RB8)
-			{	n--;
-				if ( n == 0)		// Clock line timeout
-					while(1);
-		}	}
-		n = 10000;
-		while (!PORTBbits.RB9)	// Data line busy
-		{	n--;
-			if ( n == 0)	// Data line timeout
-			{		// Data line jammed
-				c = 0;				// Try to clock the bus
-				LATBbits.LATB9 = 0;	// Low
-				for ( i = 0; i < 8; i++)
-				{	TRISBbits.TRISB9 = 0;	// Output
-					//Delay_mS(1000);		// 1 millisecond
-					if (!PORTBbits.RB9)	// Data line busy
-						c += 1;
-					TRISBbits.TRISB9 = 1;	// Let Clock line go High
-					//Delay_mS(1000);		// 1 millisecond
-				}
-				if (c < 8)
-					n = 10;
-		}	}
-}	}
-
+/*****************************************************************************/
 void I2C_1_Repeated_Read(char device_adr, char device_reg, char num_bytes) {
 
     char rx;
@@ -225,19 +185,19 @@ void I2C_1_Repeated_Read(char device_adr, char device_reg, char num_bytes) {
         I2C1CONbits.ACKEN = 1; //Send ACK/NACK
         while (I2C1CONbits.ACKEN);
         rx++;
-        Delay_ms(5);
+//        Delay_ms(5);
     }
 
     I2C1CONbits.PEN = 1; //Stop condition
     while (I2C1CONbits.PEN == 1); //Wait for stop to finish
     
 }
-
+/******************************************************************************/
 int Xfer_Int (char adr){
     
     return Recieve_Buffer[adr];
 }
-
+/******************************************************************************/
 int Read_Flag (void){
 
     return flag;

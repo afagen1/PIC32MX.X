@@ -138,6 +138,7 @@ TFT_WriteCommand(0x11);   // Exit Sleep
 /******************************************************************************/
 //Delay_ms(150);            // Delay of 
 TFT_WriteCommand(0x29);   // Display ON (29h)
+Delay_ms(200);
 TFT_FillScreen(BLACK);
 }
 

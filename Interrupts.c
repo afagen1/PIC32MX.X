@@ -13,31 +13,40 @@
 
 #include <xc.h>
 #include <sys/attribs.h>
+#include "MT3339.h"
+#include "ILI9341.h"
 
-
-void __ISR(_TIMER_1_VECTOR, ipl0SOFT) Timer_1_ISR(void) {
-    
-    //Add a pin for heartbeat
-    
-    IFS0bits.T1IF = 0;
-}
-
-void __ISR(_UART_1_VECTOR, ipl7SOFT) UART_1_RX_ISR(void){
+void __ISR(_UART_1_VECTOR, ipl7AUTO) UART_1_RX_ISR(void) {
     char rx;
     //Echo Code for Debugging
-    if(IFS1bits.U1RXIF){
-       rx = U1RXREG;
-       U2TXREG = rx;
-    }
-    IFS1bits.U1RXIF = 0;
-}
+    if (IFS1bits.U1RXIF) {
+        rx = U1RXREG;
+        if (rx == '$' && NMEA_Enable) { //wait for a new string to occur 
+            rx_nmea = rx;
+            NMEA_State = 1;
 
-void __ISR(_UART_2_VECTOR, ipl7SOFT) UART_2_RX_ISR(void){
-    char rx;
-    //Add RX handler
-    if(IFS1bits.U2RXIF){
-        rx = U2RXREG;
-        U1TXREG = rx;
+        } else {
+            if (NMEA_State) {
+                rx_nmea = rx;
+                NMEA_Flag = 1;
+            }
+            else {
+                U1TXREG = rx;
+                while (!U1STAbits.TRMT);
+            }
+        }
+
+        IFS1bits.U1RXIF = 0;
     }
-    IFS1bits.U2RXIF = 0;
+    IFS1bits.U1TXIF = 0;
 }
+    void __ISR(_UART_2_VECTOR, ipl7SOFT) UART_2_RX_ISR(void) {
+        char rx;
+        //Add RX handler
+        if (IFS1bits.U2RXIF) {
+            rx = U2RXREG;
+            U2TXREG = rx;
+        }
+        IFS1bits.U2RXIF = 0;
+        IFS1bits.U2TXIF = 0;
+    }

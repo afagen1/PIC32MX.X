@@ -84,9 +84,10 @@
 #define ACC_Y_OFF_LSB       0x57
 #define ACC_X_OFF_MSB       0x56
 #define ACC_X_OFF_LSB       0x55
+#define BNO_CHIP_ID         0x00
 
 int flag;
-int Recieve_Buffer[20];
+int Recieve_Buffer [20];
 
 void I2C_1_Init(void);
 void I2C_2_Init(void);
@@ -94,8 +95,8 @@ char I2C_1_Read_Byte(char device_adr, char reg_adr);
 char I2C_2_Read_Byte(char device_adr, char reg_adr);
 void I2C_1_Write_Byte(char device_adr, char reg_adr, char value);
 void I2C_2_Write_Byte(char device_adr, char reg_adr, char value);
-void I2C_1_Check(void);
 void I2C_1_Repeated_Read(char device_adr, char device_reg, char num_bytes);
+int Xfer_Int (char adr);
 int Read_Flag(void);
 
 #endif

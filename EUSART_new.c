@@ -15,7 +15,6 @@
 #include "EUSART.h"
 
 
-
 ////////////////////////////////////////////////////////////////////////////////
 //*******************************FUNCTIONS************************************//
 ////////////////////////////////////////////////////////////////////////////////
@@ -27,18 +26,18 @@
  * 
  * Returns: NULL (VOID).
  ******************************************************************************/
-void UART_1_Init(uint16_t baudrate) {
+void UART_1_Init(int baudrate) {
     TRISAbits.TRISA4 = 1;
     LATBbits.LATB0 = 0;
     LATBbits.LATB1 = 0;
-    uint16_t brg = 0;
+    int brg = 0;
     U1MODEbits.BRGH = 0; //High Speed Baud
 
     /*TODO : Check this function*/
     if (U1MODEbits.BRGH) {
-        brg = (uint16_t) ((PB_FREQ / 4) / baudrate) - 1;
+        brg = (int) ((PB_FREQ / 4) / baudrate) - 1;
     } else {
-        brg = (uint16_t) ((PB_FREQ / 16) / baudrate) - 1;
+        brg = (int) ((PB_FREQ / 16) / baudrate) - 1;
     }
     U1BRG = 129;
     //U1BRG = 519;                //If BRGH 
@@ -64,8 +63,8 @@ void UART_1_Init(uint16_t baudrate) {
  * 
  * Returns: NULL (VOID).
  ******************************************************************************/
-void UART_2_Init(uint16_t baudrate) {
-    uint16_t brg;
+void UART_2_Init(int baudrate) {
+    int brg;
 
     TRISAbits.TRISA1 = 1;
     LATBbits.LATB6 = 0;
@@ -74,9 +73,9 @@ void UART_2_Init(uint16_t baudrate) {
     U2MODEbits.BRGH = 0; //High Speed Baud
     /*TODO : Check this function*/
     if (U2MODEbits.BRGH) {
-        brg = (uint16_t) ((PB_FREQ / 4) / baudrate) - 1;
+        brg = (int) ((PB_FREQ / 4) / baudrate) - 1;
     } else {
-        brg = (uint16_t) ((PB_FREQ / 16) / baudrate) - 1;
+        brg = (int) ((PB_FREQ / 16) / baudrate) - 1;
     }
     U2BRG = 129;
     //U2BRG = 519;                //If BRGH
@@ -102,7 +101,7 @@ void UART_2_Init(uint16_t baudrate) {
  * 
  * Returns: NULL (VOID).
  ******************************************************************************/
-void Send_String_U1(uint8_t *ptr) {
+void Send_String_U1(char *ptr) {
 
     while (*ptr != '\0') {
         U1TXREG = *ptr;
@@ -118,32 +117,11 @@ void Send_String_U1(uint8_t *ptr) {
  * 
  * Returns: NULL (VOID).
  ******************************************************************************/
-void Send_String_U2(uint8_t *ptr) {
+void Send_String_U2(char *ptr) {
 
     while (*ptr != '\0') {
         U2TXREG = *ptr;
         ptr++;
         while (U2STAbits.UTXBF);
     }
-}
-
-uint8_t Send_String_U1_L(uint8_t *ptr, uint16_t num_bytes){
-    
-    uint16_t index = 0;
-    while(index != num_bytes){
-        U2TXREG = *ptr;
-        ptr ++;
-        index ++;
-        /* While we are waiting for the char to be transmitted,
-           we see if we timeout. Timeout occurs when we wait
-           twice the amount of time to transmit a char.
-           2*T(9600) ~~ 8/PBCLK * 600                     */
-        while (U1STAbits.UTXBF) {
-            Null_Timer_1();
-            Timer_1_Start();
-            if(TMR1 == 600)
-                return 0;
-        }
-    }
-    return 1;
 }

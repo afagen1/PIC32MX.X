@@ -8,14 +8,26 @@
 //                                                                   //
 //*******************************************************************// 
 
+///////////////////////////////////////////////////////////////////////////////
+//*****************************Includes**************************************//
+///////////////////////////////////////////////////////////////////////////////
 #include <proc/p32mx170f256b.h>
 #include "I2C.h"
  
-//Refer to I2C.h for Address Defines
+//Refer to BNO055.h and MAX17043.h for Address Defines or...
+//Refer to schematic for Address of Devices
 
-//RB9 = SDA1
-//RB8 = SCL1
-/*****************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+//*******************************FUNCTIONS************************************//
+////////////////////////////////////////////////////////////////////////////////
+
+/******************************************************************************
+ * Description: Initializes I2C Port 1.
+ * 
+ * Inputs: NULL (VOID).
+ * 
+ * Returns: NULL (VOID).
+ ******************************************************************************/
 void I2C_1_Init(void){
     flag = 0;
     //Set Baud Rates
@@ -34,7 +46,14 @@ void I2C_1_Init(void){
     IFS1bits.I2C1BIF = 0;
     
 }
-/*****************************************************************************/
+
+/******************************************************************************
+ * Description: Initializes I2C Port 2.
+ * 
+ * Inputs: NULL (VOID).
+ * 
+ * Returns: NULL (VOID).
+ ******************************************************************************/
 void I2C_2_Init(void){
     
     //Set Baud Rates
@@ -46,8 +65,15 @@ void I2C_2_Init(void){
     
     
 }
-/******************************************************************************/
-char I2C_1_Read_Byte(char device_adr, char reg_adr){
+
+/******************************************************************************
+ * Description: Reads a single register as a byte from I2C Port 1.
+ * 
+ * Inputs: Device Address and Register Address.
+ * 
+ * Returns: Value as a Byte.
+ ******************************************************************************/
+uint8_t I2C_1_Read_Byte(uint8_t device_adr, uint8_t reg_adr){
     
     char rx;
     
@@ -77,10 +103,17 @@ char I2C_1_Read_Byte(char device_adr, char reg_adr){
     while (I2C1CONbits.PEN == 1);       //Wait for stop to finish
     return rx;
 }
-/******************************************************************************/
-char I2C_2_Read_Byte(char device_adr, char reg_adr){
+
+/******************************************************************************
+ * Description: Reads a single register as a byte from I2C Port 2.
+ * 
+ * Inputs: Device Address and Register Address.
+ * 
+ * Returns: Value as a Byte.
+ ******************************************************************************/
+uint8_t I2C_2_Read_Byte(uint8_t device_adr, uint8_t reg_adr){
     
-    char rx;
+    uint8_t rx;
     
     I2C2CONbits.SEN = 1;                //Start condition
     while (I2C2CONbits.SEN == 1);       //Wait for start to finish
@@ -101,37 +134,51 @@ char I2C_2_Read_Byte(char device_adr, char reg_adr){
     while (I2C2CONbits.PEN == 1);       //Wait for stop to finish
     return rx;
 }
-/******************************************************************************/
-void I2C_1_Write_Byte(char device_adr, char reg_adr, char value){
-    char data;
+
+/******************************************************************************
+ * Description: Writes to a single register as a byte from I2C Port 1.
+ * 
+ * Inputs: Device Address and Register Address, Value to be written as a Byte.
+ * 
+ * Returns: NULL (VOID).
+ ******************************************************************************/
+void I2C_1_Write_Byte(uint8_t device_adr, uint8_t reg_adr, uint8_t value){
+    uint8_t data;
     
     I2C1CONbits.SEN = 1;                //Start condition
     while (I2C1CONbits.SEN == 1);       //Wait for start to finish
     data = I2C1TRN;                     //Make sure buffer is clear
     I2C1TRN = device_adr;               //address with R/W set for read
     while (I2C1STATbits.TRSTAT);        // wait until write cycle is complete
-    if(I2C1STATbits.TBF){flag |= 0x01;}
-    if(I2C1STATbits.BCL){flag |= 0x02;}
-    if(I2C1STATbits.IWCOL){flag |= 0x04;}
+//    if(I2C1STATbits.TBF){flag |= 0x01;}
+//    if(I2C1STATbits.BCL){flag |= 0x02;}
+//    if(I2C1STATbits.IWCOL){flag |= 0x04;}
     while (I2C1STATbits.ACKSTAT);
     I2C1TRN = reg_adr;
     while (I2C1STATbits.TRSTAT);
-    if(I2C1STATbits.TBF){flag |= 0x08;}
-    if(I2C1STATbits.BCL){flag |= 0x10;}
-    if(I2C1STATbits.IWCOL){flag |= 0x20;}
+//    if(I2C1STATbits.TBF){flag |= 0x08;}
+//    if(I2C1STATbits.BCL){flag |= 0x10;}
+//    if(I2C1STATbits.IWCOL){flag |= 0x20;}
     while (I2C1STATbits.ACKSTAT);
     I2C1TRN = value;           //address with R/W set for read
     while (I2C1STATbits.TRSTAT);
-    if(I2C1STATbits.TBF){flag |= 0x40;}
-    if(I2C1STATbits.BCL){flag |= 0x80;}
-    if(I2C1STATbits.IWCOL){flag |= 0x100;}
+//    if(I2C1STATbits.TBF){flag |= 0x40;}
+//    if(I2C1STATbits.BCL){flag |= 0x80;}
+//    if(I2C1STATbits.IWCOL){flag |= 0x100;}
     while (I2C1STATbits.ACKSTAT);
     I2C1CONbits.PEN = 1;                //Stop condition
     while (I2C1CONbits.PEN == 1);       //Wait for stop to finish
 }
-/******************************************************************************/
-void I2C_2_Write_Byte(char device_adr, char reg_adr, char value){
-    char data;
+
+/******************************************************************************
+ * Description: Writes to a single register as a byte from I2C Port 2.
+ * 
+ * Inputs: Device Address and Register Address, Value to be written as a Byte.
+ * 
+ * Returns: NULL (VOID).
+ ******************************************************************************/
+void I2C_2_Write_Byte(uint8_t device_adr, uint8_t reg_adr, uint8_t value){
+    uint8_t data;
     
     I2C2CONbits.SEN = 1;                //Start condition
     while (I2C2CONbits.SEN == 1);       //Wait for start to finish
@@ -148,11 +195,19 @@ void I2C_2_Write_Byte(char device_adr, char reg_adr, char value){
     I2C2CONbits.PEN = 1;                //Stop condition
     while (I2C2CONbits.PEN == 1);       //Wait for stop to finish
 }
-/*****************************************************************************/
-void I2C_1_Repeated_Read(char device_adr, char device_reg, char num_bytes) {
 
-    char rx;
-    char state;
+/******************************************************************************
+ * Description: Reads multiple registers from a device via I2C Port 1. Stores 
+ * the values into a buffer Recieve_Buffer.
+ * 
+ * Inputs: Device Address, Start Register Address, Number of bytes to read.
+ * 
+ * Returns: NULL (VOID).
+ ******************************************************************************/
+void I2C_1_Repeated_Read(uint8_t device_adr, uint8_t device_reg, uint8_t num_bytes) {
+
+    uint8_t rx;
+    uint8_t state;
     I2C1CONbits.SEN = 1; //Start condition
     while (I2C1CONbits.SEN == 1); //Wait for start to finish
     rx = I2C1TRN;
@@ -177,28 +232,66 @@ void I2C_1_Repeated_Read(char device_adr, char device_reg, char num_bytes) {
         while (!I2C1STATbits.RBF); // wait till buffer is full
         Recieve_Buffer[rx] = I2C1RCV;
         //Handling ACK/NACK for repeated reception
-        if (rx != (num_bytes - 1)) { // If were not on the last byte send ACK
-            I2C1CONbits.ACKDT = 0;
-        } else { // If were on the last byte send NACK
+        if (rx == (num_bytes - 1)) { // If were not on the last byte send ACK
             I2C1CONbits.ACKDT = 1;
+        } else { // If were on the last byte send NACK
+            I2C1CONbits.ACKDT = 0;
         }
         I2C1CONbits.ACKEN = 1; //Send ACK/NACK
         while (I2C1CONbits.ACKEN);
         rx++;
-//        Delay_ms(5);
+        //Delay_ms(5);
     }
 
     I2C1CONbits.PEN = 1; //Stop condition
     while (I2C1CONbits.PEN == 1); //Wait for stop to finish
     
 }
-/******************************************************************************/
-int Xfer_Int (char adr){
+
+void I2C_1_Repeated_Write(uint8_t device_adr, uint8_t reg_adr, uint8_t * value, uint8_t numBytes){
+    uint8_t dummy,i;
+    
+    I2C2CONbits.SEN = 1;                //Start condition
+    while (I2C2CONbits.SEN == 1);       //Wait for start to finish
+    dummy = I2C2RCV;                       //Make sure buffer is clear
+    I2C2TRN = device_adr;               //address with R/W set for read
+    while (I2C2STATbits.TRSTAT);           // wait until write cycle is complete
+    while (I2C1STATbits.ACKSTAT);
+    I2C2TRN = reg_adr;
+    while (I2C2STATbits.TRSTAT);
+    while (I2C1STATbits.ACKSTAT);
+    for(i = 0;i<numBytes;i++){
+    I2C2TRN = *value;           //address with R/W set for read
+    while (I2C2STATbits.TRSTAT);
+    while (I2C1STATbits.ACKSTAT);
+    value ++;
+    }
+    I2C2CONbits.PEN = 1;                //Stop condition
+    while (I2C2CONbits.PEN == 1);       //Wait for stop to finish
+}
+
+
+/******************************************************************************
+ * Description: Transfers a single byte out of a buffer (Recieve_Buffer) at a
+ * specified address.
+ * 
+ * Inputs: Register address.
+ * 
+ * Returns: Value inside of register as a byte (signed).
+ ******************************************************************************/
+int8_t Xfer_Int (uint8_t adr){
     
     return Recieve_Buffer[adr];
 }
-/******************************************************************************/
-int Read_Flag (void){
+
+/******************************************************************************
+ * Description: Reads a flag.
+ * 
+ * Inputs: NULL (VOID)
+ * 
+ * Returns: Value of the flag as a integer.
+ ******************************************************************************/
+uint16_t Read_Flag (void){
 
     return flag;
 }

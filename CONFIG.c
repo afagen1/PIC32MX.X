@@ -8,6 +8,10 @@
 //                                                                   //
 //*******************************************************************//
 
+////////////////////////////////////////////////////////////////////////////////
+//*****************************Pragmas****************************************//
+////////////////////////////////////////////////////////////////////////////////
+
 // DEVCFG3
 #pragma config USERID = 0xFFFF          // Enter Hexadecimal value (Enter Hexadecimal value)
 #pragma config PMDL1WAY = ON            // Peripheral Module Disable Configuration (Allow only one reconfiguration)
@@ -40,7 +44,17 @@
 #include <xc.h>
 #include "CONFIG.h"
  
+////////////////////////////////////////////////////////////////////////////////
+//*******************************FUNCTIONS************************************//
+////////////////////////////////////////////////////////////////////////////////
 
+/******************************************************************************
+ * Description: Initilizes System Parameters (CLOCK, TRIS/PINMODES, Interrupts)
+ * 
+ * Inputs: NULL (VOID).
+ * 
+ * Returns: NULL (VOID).
+ ******************************************************************************/
 void InitSystem(void) {
 
     InitClock();
@@ -48,7 +62,13 @@ void InitSystem(void) {
     InitInterruptSystem();
 
 }
-
+/******************************************************************************
+ * Description: Initilizes System Interrupt Modes
+ * 
+ * Inputs: NULL (VOID).
+ * 
+ * Returns: NULL (VOID).
+ ******************************************************************************/
 void InitInterruptSystem(void){
     INTCONbits.MVEC = 1;            //Multi vector mode
     __builtin_disable_interrupts();
@@ -74,10 +94,26 @@ void InitInterruptSystem(void){
     __builtin_enable_interrupts();
 
 }
+
+/******************************************************************************
+ * Description: Initilizes System Clock Param's
+ * 
+ * Inputs: NULL (VOID).
+ * 
+ * Returns: NULL (VOID).
+ ******************************************************************************/
 void InitClock(void) {
     //Nothing required at this time
 }
 
+/******************************************************************************
+ * Description: Initilizes System Pin Modes (PPS, D/A settings, Initial TRIS
+ * to Outputs).
+ * 
+ * Inputs: NULL (VOID).
+ * 
+ * Returns: NULL (VOID).
+ ******************************************************************************/
 void InitPins(void) {
     ANSELA = 0;
     ANSELB = 0;
@@ -95,12 +131,13 @@ void InitPins(void) {
     U1RXR = 2;  //RA4 (RX1)
     RPB4R = 1;  //RB4 (TX1)
     U2RXR = 0;  //RA1 (RX2)
-    RPA3R = 2;  //RB3 (TX2)
+    RPA3R = 2;  //RA3 (TX2)
     RPB0R = 1; // RB0 (U1RTS)
     U1CTSR = 2; //RB1 (U1CTS)
-    U2CTSR = 1; //RB6 (U1CTS)
-    RPB3R = 2;  //RB3 (U1RTS)
+    U2CTSR = 1; //RB6 (U2CTS)
+    RPB3R = 2;  //RB3 (U2RTS)
     
     CFGCONbits.IOLOCK = 1;
     SYSKEY = 0x33333333; 
 }
+/*END OF FILE*/
